@@ -2,6 +2,19 @@
 // Universal Image Converter - JavaScript
 // ============================================
 
+// ========== SERVER CONFIGURATION ==========
+// Determine the API server URL
+const SERVER_URL = (() => {
+    // If running locally (localhost), use local server
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        return `http://${window.location.hostname}:3000`;
+    }
+    // If running on GitHub Pages or remote host, use the same origin (requires CORS enabled on remote server)
+    return window.location.origin;
+})();
+
+console.log(`🔗 Server URL: ${SERVER_URL}`);
+
 // ========== SINGLE CONVERSION ==========
 
 const uploadForm = document.getElementById('uploadForm');
@@ -193,7 +206,7 @@ uploadForm.addEventListener('submit', async function(e) {
     try {
         console.log('🚀 Sending conversion request to server...');
         
-        const response = await fetch('/convert', {
+        const response = await fetch(`${SERVER_URL}/convert`, {
             method: 'POST',
             body: formData
         });
@@ -250,7 +263,7 @@ function showResult(result) {
         </div>
     `;
     
-    downloadLink.href = result.downloadUrl;
+    downloadLink.href = `${SERVER_URL}${result.downloadUrl}`;
     downloadLink.download = result.filename;
     resultSection.style.display = 'block';
 }
@@ -377,7 +390,7 @@ batchConvertBtn.addEventListener('click', async function(e) {
     totalFilesSpan.textContent = selectedBatchFiles.length;
     
     try {
-        const response = await fetch('/batch-convert', {
+        const response = await fetch(`${SERVER_URL}/batch-convert`, {
             method: 'POST',
             body: formData
         });
@@ -421,7 +434,7 @@ function showBatchResults(result) {
                     <p class="item-name">${item.originalName}</p>
                     <p class="item-info">→ ${item.convertedName} (${item.size})</p>
                 </div>
-                <a href="${item.downloadUrl}" class="mini-download-btn" download>
+                <a href="${SERVER_URL}${item.downloadUrl}" class="mini-download-btn" download>
                     <i class="fas fa-download"></i>
                 </a>
             </div>`;
