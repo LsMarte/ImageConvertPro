@@ -1,0 +1,27 @@
+{
+  "name": "heic-converter",
+  "version": "1.0.0",
+  "description": "HEIC to other formats converter using Express and Sharp",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "heic",
+    "converter",
+    "express",
+    "sharp",
+    "image"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0",
+    "heic-convert": "^2.1.0",
+    "imagemagick": "^0.1.3",
+    "multer": "^2.0.2",
+    "sharp": "^0.34.4"
+  }
+}

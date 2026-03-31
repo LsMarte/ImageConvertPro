@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universal Image Converter</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-magic"></i>
+                <h1>Image Converter Pro</h1>
+            </div>
+            <p class="subtitle">Convert between ANY image formats - Fast, Private & Easy</p>
+        </header>
+
+        <main class="main-content">
+            <!-- Tab Navigation -->
+            <div class="tab-navigation">
+                <button class="tab-btn active" data-tab="single-convert">
+                    <i class="fas fa-image"></i>
+                    <span>Single Convert</span>
+                </button>
+                <button class="tab-btn" data-tab="batch-convert">
+                    <i class="fas fa-layer-group"></i>
+                    <span>Batch Convert</span>
+                </button>
+            </div>
+
+            <!-- Single Conversion Tab -->
+            <div id="single-convert" class="tab-content active">
+                <div class="upload-section">
+                    <form id="uploadForm" enctype="multipart/form-data">
+                        <!-- File Input with Preview -->
+                        <div class="file-input-container">
+                            <input type="file" id="imageFile" name="file" accept="image/*" required>
+                            <label for="imageFile" class="file-input-label">
+                                <div class="upload-icon">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                </div>
+                                <p class="file-text">Choose file or drag & drop</p>
+                                <p class="file-hint">Supports: JPG, PNG, WEBP, GIF, BMP, HEIC, TIFF</p>
+                            </label>
+                        </div>
+
+                        <!-- Preview Section -->
+                        <div id="previewSection" class="preview-section" style="display: none;">
+                            <div class="preview-container">
+                                <img id="previewImage" alt="Preview">
+                                <div class="preview-info">
+                                    <p id="previewName"></p>
+                                    <p id="previewSize"></p>
+                                    <p id="previewDimensions"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Conversion Options -->
+                        <div class="options-section">
+                            <div class="option-group">
+                                <label for="format">📤 Output Format:</label>
+                                <select id="format" name="format" required>
+                                    <option value="">Select output format</option>
+                                    <option value="jpg">JPG / JPEG</option>
+                                    <option value="png">PNG</option>
+                                    <option value="webp">WEBP</option>
+                                    <option value="gif">GIF</option>
+                                    <option value="heic">HEIC (iPhone format)</option>
+                                    <option value="tiff">TIFF</option>
+                                </select>
+                            </div>
+
+                            <div class="option-group">
+                                <label for="quality">🎚️ Quality:</label>
+                                <div class="quality-control">
+                                    <input type="range" id="quality" name="quality" min="1" max="100" value="85">
+                                    <span class="quality-value">85</span>%
+                                </div>
+                            </div>
+
+                            <div class="resize-options">
+                                <button type="button" class="resize-toggle" id="resizeToggle">
+                                    <i class="fas fa-expand"></i> Resize Options
+                                </button>
+                                <div id="resizePanel" class="resize-panel" style="display: none;">
+                                    <div class="resize-group">
+                                        <label for="width">Width (px):</label>
+                                        <input type="number" id="width" name="width" min="1" placeholder="Keep original">
+                                    </div>
+                                    <div class="resize-group">
+                                        <label for="height">Height (px):</label>
+                                        <input type="number" id="height" name="height" min="1" placeholder="Keep original">
+                                    </div>
+                                    <small>Leave blank to keep original dimensions</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="convert-btn" disabled>
+                            <i class="fas fa-exchange-alt"></i>
+                            Convert Image
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Progress Section -->
+                <div class="progress-section" id="progressSection" style="display: none;">
+                    <div class="progress-container">
+                        <div class="spinner"></div>
+                        <p class="progress-text">Converting your image...</p>
+                    </div>
+                </div>
+
+                <!-- Result Section -->
+                <div class="result-section" id="resultSection" style="display: none;">
+                    <div class="result-card success">
+                        <div class="result-header">
+                            <i class="fas fa-check-circle"></i>
+                            <h3>Conversion Successful! ✨</h3>
+                        </div>
+                        <div class="result-details" id="resultDetails"></div>
+                        <div class="result-actions">
+                            <a href="#" id="downloadLink" class="download-btn" download>
+                                <i class="fas fa-download"></i>
+                                Download
+                            </a>
+                            <button type="button" class="convert-another-btn" onclick="resetForm()">
+                                <i class="fas fa-plus"></i>
+                                Convert Another
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Error Section -->
+                <div class="error-section" id="errorSection" style="display: none;">
+                    <div class="result-card error">
+                        <div class="result-header error-header">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <h3>Conversion Failed</h3>
+                        </div>
+                        <p id="errorMessage" class="error-message"></p>
+                        <button type="button" class="retry-btn" onclick="resetForm()">
+                            <i class="fas fa-redo"></i>
+                            Try Again
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Batch Conversion Tab -->
+            <div id="batch-convert" class="tab-content">
+                <div class="batch-section">
+                    <div class="batch-upload">
+                        <input type="file" id="batchFiles" name="files" accept="image/*" multiple>
+                        <label for="batchFiles" class="batch-upload-label">
+                            <div class="upload-icon">
+                                <i class="fas fa-images"></i>
+                            </div>
+                            <p class="file-text">Upload multiple images</p>
+                            <p class="file-hint">Drag & drop or click to browse (up to 10 files)</p>
+                        </label>
+                    </div>
+
+                    <!-- Batch Files List -->
+                    <div id="batchFilesList" class="batch-files-list" style="display: none;"></div>
+
+                    <!-- Batch Options -->
+                    <div class="batch-options" id="batchOptionsSection" style="display: none;">
+                        <div class="option-group">
+                            <label for="batchFormat">📤 Output Format:</label>
+                            <select id="batchFormat" name="format" required>
+                                <option value="">Select output format</option>
+                                <option value="jpg">JPG / JPEG</option>
+                                <option value="png">PNG</option>
+                                <option value="webp">WEBP</option>
+                                <option value="gif">GIF</option>
+                                <option value="heic">HEIC</option>
+                                <option value="tiff">TIFF</option>
+                            </select>
+                        </div>
+
+                        <div class="option-group">
+                            <label for="batchQuality">🎚️ Quality:</label>
+                            <div class="quality-control">
+                                <input type="range" id="batchQuality" name="quality" min="1" max="100" value="85">
+                                <span class="quality-value">85</span>%
+                            </div>
+                        </div>
+
+                        <button type="button" class="convert-btn" id="batchConvertBtn">
+                            <i class="fas fa-exchange-alt"></i>
+                            Convert All Files
+                        </button>
+                    </div>
+
+                    <!-- Batch Progress -->
+                    <div id="batchProgressSection" style="display: none;">
+                        <div class="batch-progress">
+                            <div class="progress-header">
+                                <span>Converting: <strong id="currentFile">0</strong>/<strong id="totalFiles">0</strong></span>
+                                <span id="progressPercent">0%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="batchProgressFill"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Batch Results -->
+                    <div id="batchResultsSection" style="display: none;">
+                        <div class="batch-results">
+                            <h3>Batch Conversion Results</h3>
+                            <div id="batchResultsList"></div>
+                            <button type="button" class="batch-reset-btn" onclick="resetBatchForm()">
+                                <i class="fas fa-redo"></i>
+                                Convert More Files
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="features">
+                <div class="feature">
+                    <i class="fas fa-bolt"></i>
+                    <span>Lightning Fast</span>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>100% Private</span>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-check-double"></i>
+                    <span>All Formats</span>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-mobile-alt"></i>
+                    <span>Works Everywhere</span>
+                </div>
+            </div>
+            <p class="copyright">© 2025 Image Converter Pro. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
