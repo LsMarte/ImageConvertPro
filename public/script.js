@@ -9,11 +9,18 @@ const SERVER_URL = (() => {
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
         return `http://${window.location.hostname}:3000`;
     }
-    // If running on GitHub Pages or remote host, use the same origin (requires CORS enabled on remote server)
+    // If running on GitHub Pages, use deployed Render backend
+    // UPDATE THIS URL with your Render deployment URL (e.g., https://imageconvertpro-xyz.onrender.com)
+    if (window.location.hostname.includes('github.io')) {
+        return 'https://imageconvertpro-abc123.onrender.com'; // ⚠️ REPLACE with your Render URL
+    }
+    // Fallback for other hosts
     return window.location.origin;
 })();
 
 console.log(`🔗 Server URL: ${SERVER_URL}`);
+
+// ⚠️ IMPORTANT: After deploying to Render, update the URL above with your actual deployment URL!
 
 // ========== SINGLE CONVERSION ==========
 

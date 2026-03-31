@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: imageconvertpro
+    runtime: node
+    region: oregon
+    plan: free
+    buildCommand: cd heic-converter && npm install
+    startCommand: cd heic-converter && npm start
+    envVars:
+      - key: PORT
+        value: 3000
