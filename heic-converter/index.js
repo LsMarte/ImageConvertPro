@@ -8,6 +8,20 @@ const heicConvert = require('heic-convert');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Enable CORS for GitHub Pages and local requests
+app.use((req, res, next) => {
+    // Allow requests from GitHub Pages and localhost
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    
+    // Handle preflight requests
+    if (req.method === 'OPTIONS') {
+        return res.sendStatus(200);
+    }
+    next();
+});
+
 // Create necessary directories
 const uploadsDir = path.join(__dirname, '..', 'uploads');
 const convertedDir = path.join(__dirname, '..', 'converted');
